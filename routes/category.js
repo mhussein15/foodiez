@@ -9,7 +9,7 @@ const {
   categoryDelete,
   categoryCreate,
 } = require("../controllers/category");
-
+const { ingredientCreate } = require("../controllers/ingredient");
 router.param("categoryID", async (req, res, next, categoryID) => {
   const foundCategory = await fetchCategory(categoryID, next);
   if (categoryID) {
@@ -32,5 +32,9 @@ router.post("/", upload.single("image"), categoryCreate);
 router.put("/:categoryID", upload.single("image"), categoryUpdate);
 //DELETE PRODUCT
 router.delete("/:categoryID", categoryDelete);
-
+router.post(
+  "/:categoryID/ingredients",
+  upload.single("image"),
+  ingredientCreate
+);
 module.exports = router;

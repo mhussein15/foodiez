@@ -1,59 +1,55 @@
 const { Category, Ingredient } = require("../db/models");
 
-exports.fetchCategory = async (categoryID, next) => {
+exports.fetchIngredient = async (ingredientID, next) => {
   try {
-    const foundCategory = await Category.findByPk(categoryID);
-    return foundCategory;
+    const foundIngredient = await Ingredient.findByPk(ingredientID);
+    return foundIngredient;
   } catch (error) {
     next(error);
   }
 };
 
-exports.categoryList = async (req, res) => {
+exports.ingredientList = async (req, res) => {
   try {
-    const categories = await Category.findAll({
+    const ingredients = await Ingredient.findAll({
       attributes: { exclude: ["createdAt", "updatedAt"] },
-      include: {
-        model: Ingredient,
-        as: "ingredients",
-        attributes: ["id"],
-      },
     });
-    res.status(200).json(categories);
+    res.status(200).json(ingredients);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-exports.categoryDetail = (req, res) => res.json(req.category);
+exports.ingredientDetail = (req, res) => res.json(req.ingredient);
 
-exports.categoryCreate = async (req, res) => {
+exports.ingredientCreate = async (req, res) => {
   try {
     if (req.file) {
       req.body.image = `http://${req.get("host")}/media/${req.file.filename}`;
     }
-    const newCategory = await Category.create(req.body);
-    res.status(201).json(newCategory);
+    req.body.categoryId = req.category.id;
+    const newIngredient = await Ingredient.create(req.body);
+    res.status(201).json(newIngredient);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-exports.categoryUpdate = async (req, res) => {
+exports.ingredientUpdate = async (req, res) => {
   try {
     if (req.file) {
       req.body.image = `http://${req.get("host")}/media/${req.file.filename}`;
     }
-    await req.category.update(req.body);
+    await req.ingredient.update(req.body);
     res.sendStatus(204);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-exports.categoryDelete = async (req, res) => {
+exports.ingredientDelete = async (req, res) => {
   try {
-    await req.category.destroy();
+    await req.ingredient.destroy();
     res.sendStatus(204);
   } catch (error) {
     res.status(500).json({ message: error.message });
