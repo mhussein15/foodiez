@@ -2,7 +2,13 @@ const { Category, Ingredient } = require("../db/models");
 
 exports.fetchCategory = async (categoryID, next) => {
   try {
-    const foundCategory = await Category.findByPk(categoryID);
+    const foundCategory = await Category.findByPk(categoryID, {
+      include: {
+        model: Ingredient,
+        as: "ingredients",
+        attributes: ["id"],
+      },
+    });
     return foundCategory;
   } catch (error) {
     next(error);
