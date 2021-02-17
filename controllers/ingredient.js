@@ -1,8 +1,17 @@
-const { Category, Ingredient } = require("../db/models");
+const { Recipe, Ingredient } = require("../db/models");
 
 exports.fetchIngredient = async (ingredientID, next) => {
   try {
-    const foundIngredient = await Ingredient.findByPk(ingredientID);
+    const foundIngredient = await Ingredient.findByPk(ingredientID, {
+      include: {
+        model: Recipe,
+        through: {
+          attributes: [],
+        },
+        as: "recipes",
+        attributes: ["id"],
+      },
+    });
     return foundIngredient;
   } catch (error) {
     next(error);
@@ -13,6 +22,14 @@ exports.ingredientList = async (req, res) => {
   try {
     const ingredients = await Ingredient.findAll({
       attributes: { exclude: ["createdAt", "updatedAt"] },
+      include: {
+        model: Recipe,
+        through: {
+          attributes: [],
+        },
+        as: "recipes",
+        attributes: ["id"],
+      },
     });
     res.status(200).json(ingredients);
   } catch (error) {
@@ -20,7 +37,9 @@ exports.ingredientList = async (req, res) => {
   }
 };
 
-exports.ingredientDetail = (req, res) => res.json(req.ingredient);
+exports.ingredientDetail = (req, res) => {
+  res.json(req.ingredient);
+};
 
 exports.ingredientCreate = async (req, res) => {
   try {

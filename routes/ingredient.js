@@ -12,7 +12,7 @@ const {
 
 router.param("ingredientID", async (req, res, next, ingredientID) => {
   const foundIngredient = await fetchIngredient(ingredientID, next);
-  if (ingredientID) {
+  if (foundIngredient) {
     req.ingredient = foundIngredient;
     next();
   } else {
@@ -27,7 +27,6 @@ router.get("/", ingredientList);
 //GET DETAIL
 router.get("/:ingredientID", ingredientDetail);
 //ADD PRODUCT
-
 //UPDATE PRODUCT
 router.put("/:ingredientID", upload.single("image"), ingredientUpdate);
 //DELETE PRODUCT

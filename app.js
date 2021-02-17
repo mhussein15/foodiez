@@ -6,12 +6,14 @@ const db = require("./db/models");
 const morgan = require("morgan");
 const categoryRouter = require("./routes/category");
 const IngredientRouter = require("./routes/ingredient");
+const recipeRouter = require("./routes/recipe");
 app.use(morgan("dev"));
 
 app.use(express.json());
 app.use(cors());
 app.use("/category", categoryRouter);
 app.use("/ingredient", IngredientRouter);
+app.use("/recipe", recipeRouter);
 app.use("/media", express.static(path.join(__dirname, "media")));
 
 app.use((req, res, next) => {
