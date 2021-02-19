@@ -1,3 +1,4 @@
+const { INTEGER } = require("sequelize");
 const { Recipe, Ingredient } = require("../db/models");
 
 exports.fetchRecipe = async (recipeID, next) => {
@@ -44,13 +45,13 @@ exports.recipeDetail = (req, res) => {
 };
 
 exports.recipeCreate = async (req, res) => {
-  console.log(req.body);
   try {
     if (req.file) {
       req.body.image = `http://${req.get("host")}/media/${req.file.filename}`;
     }
     const newRecipe = await Recipe.create(req.body);
-    res.status(201).json(newRecipe);
+    const ingRec = await newRecipe.addIngredients(req.body.ingredients);
+    res.status(201).json({newRecipe});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -62,6 +63,7 @@ exports.recipeUpdate = async (req, res) => {
       req.body.image = `http://${req.get("host")}/media/${req.file.filename}`;
     }
     await req.recipe.update(req.body);
+    await req.recipe.setIngredients(req.body.ingredients);
     res.sendStatus(204);
   } catch (error) {
     res.status(500).json({ message: error.message });
