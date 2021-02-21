@@ -46,12 +46,25 @@ exports.recipeDetail = (req, res) => {
 
 exports.recipeCreate = async (req, res) => {
   try {
+    console.log(req.body)
     if (req.file) {
       req.body.image = `http://${req.get("host")}/media/${req.file.filename}`;
     }
     const newRecipe = await Recipe.create(req.body);
-    const ingRec = await newRecipe.addIngredients(req.body.ingredients);
-    res.status(201).json({newRecipe});
+    await newRecipe.addIngredients(req.body.ingredients.split(',').map(Number));
+    const recipe = await Recipe.findByPk(newRecipe.id, {
+      include: [
+        {
+          model: Ingredient,
+          through: {
+            attributes: [],
+          },
+          as: "ingredients",
+          attributes: ["id"],
+        },
+      ],
+    });
+    res.status(201).json({ newRecipe:recipe });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

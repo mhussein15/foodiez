@@ -9,6 +9,7 @@ const {
   recipeDelete,
   recipeCreate,
 } = require("../controllers/recipe");
+
 router.param("recipeID", async (req, res, next, recipeID) => {
   const foundRecipe = await fetchRecipe(recipeID, next);
   if (foundRecipe) {
@@ -21,7 +22,7 @@ router.param("recipeID", async (req, res, next, recipeID) => {
     });
   }
 });
-
+//GET RECIPE LIST`
 router.get("/", recipeList);
 //GET DETAIL
 router.get("/:recipeID", recipeDetail);

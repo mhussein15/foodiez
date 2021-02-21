@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     image: {
       type: DataTypes.STRING,
     },
-    description: { type: DataTypes.STRING },
+    description: { type: DataTypes.TEXT },
   });
   SequelizeSlugify.slugifyModel(Recipe, {
     source: ["name"],
